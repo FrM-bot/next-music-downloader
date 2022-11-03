@@ -28,15 +28,19 @@ export default async function handler(
       }
       
       const info = await ytdl.getInfo(req.body.url)
-      const files = fs.readdirSync(path.join('.', PATH_DOWNLOADS))
+      fs.readdir(path.join('.', PATH_DOWNLOADS), (err, files) => {
+        if (err) {
+          return res.status(500).send({ error: err.message })
+        }
+        if (files.includes(info.videoDetails.title + EXTENSION_FILE)) {
+          return res.status(200).json(details)
+        }
+      })
       
       const details = {
         title: info.videoDetails.title,
         thumbnail: info.videoDetails.thumbnails.at(-1),
         iframeUrl: info.videoDetails.embed.iframeUrl
-      }
-      if (files.includes(info.videoDetails.title + EXTENSION_FILE)) {
-        return res.status(200).json(details)
       }
       ytdl.downloadFromInfo(info, {
         filter: (format) => format.container === 'webm' && format.hasAudio,
