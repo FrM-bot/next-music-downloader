@@ -28,7 +28,7 @@ export default async function handler(
       }
       
       const info = await ytdl.getInfo(req.body.url)
-      const files = fs.readdirSync(PATH_DOWNLOADS)
+      const files = fs.readdirSync(path.join('.', PATH_DOWNLOADS))
       
       const details = {
         title: info.videoDetails.title,
