@@ -21,8 +21,10 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      if (!fs.existsSync(PATH_DOWNLOADS)) {
-        fs.mkdirSync(PATH_DOWNLOADS)
+      if (!fs.existsSync(path.join('.', PATH_DOWNLOADS))) {
+        fs.mkdir(path.join('.', PATH_DOWNLOADS), {recursive: true}, err => {
+          console.error(err)
+      })
       }
       
       const info = await ytdl.getInfo(req.body.url)
